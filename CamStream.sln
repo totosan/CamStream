@@ -5,6 +5,19 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CamStream", "CamStream\CamStream.csproj", "{160B9B1E-DDF2-40C0-81CA-01397ED44778}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CamStreamWeb", "CamStreamWeb\CamStreamWeb.csproj", "{D189DC3A-52AD-4AB7-AE37-907773B43464}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishScripts", "PublishScripts", "{79722343-5052-4936-A6B8-5EBE5BD07690}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\AzureWebsitePublishModule.psm1 = PublishScripts\AzureWebsitePublishModule.psm1
+		PublishScripts\Publish-WebApplicationWebsite.ps1 = PublishScripts\Publish-WebApplicationWebsite.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configurations", "{F9BD52DE-3066-461D-B529-996A575D8982}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\Configurations\CamStreamWeb-WAWS-dev.json = PublishScripts\Configurations\CamStreamWeb-WAWS-dev.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +28,15 @@ Global
 		{160B9B1E-DDF2-40C0-81CA-01397ED44778}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{160B9B1E-DDF2-40C0-81CA-01397ED44778}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{160B9B1E-DDF2-40C0-81CA-01397ED44778}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D189DC3A-52AD-4AB7-AE37-907773B43464}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D189DC3A-52AD-4AB7-AE37-907773B43464}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D189DC3A-52AD-4AB7-AE37-907773B43464}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D189DC3A-52AD-4AB7-AE37-907773B43464}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F9BD52DE-3066-461D-B529-996A575D8982} = {79722343-5052-4936-A6B8-5EBE5BD07690}
 	EndGlobalSection
 EndGlobal

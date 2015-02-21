@@ -1,53 +1,78 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-namespace CamStream
+﻿namespace CamStream
 {
+    using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Globalization;
+    using System.Reactive;
+    using System.Reactive.Concurrency;
+    using System.Runtime.CompilerServices;
+    using System.Threading;
+    using System.Windows.Controls;
+    using System.Windows.Media.Imaging;
+    using System.Windows.Threading;
+    using AForge.Video;
+    using AForge.Video.DirectShow;
+    using Annotations;
+    using System.Windows.Media;
+    using System.Reactive;
+    using System.Reactive.Concurrency;
+    using System.Reactive.Linq;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : INotifyPropertyChanged
     {
+        private MainWindowViewmodel vm;
+
         public MainWindow()
         {
             InitializeComponent();
-            InitializeCam();
+            Vm = new MainWindowViewmodel();
+            this.DataContext = Vm;
+            this.UpdateLayout();
         }
 
-        private void InitializeCam()
+        public MainWindowViewmodel Vm
         {
-            // enumerate video devices
-            videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-            // create video source
-            VideoCaptureDevice videoSource = new VideoCaptureDevice(videoDevices[0].MonikerString);
-            // set NewFrame event handler
-            videoSource.NewFrame += new NewFrameEventHandler(video_NewFrame);
-            // start the video source
-            videoSource.Start();
-            // ...
-            // signal to stop when you no longer need capturing
-            videoSource.SignalToStop();
-            // ...
+            get { return vm; }
+            set { vm = value; }
         }
 
-        private void video_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        private void Cameras_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // get new frame
-            Bitmap bitmap = eventArgs.Frame;
-            // process the frame
+            var filterInfo = e.AddedItems[0] as FilterInfo;
+            if (filterInfo != null)
+            {
+                string moniker = filterInfo.MonikerString;
+                vm.StopCam();
+                vm.StartCam(moniker);
+            }
 
+            Vm.Frames
+                .ObserveOnDispatcher()
+                .Subscribe(f =>
+                {
+                    Picture.Source = Imaging.CreateBitmapSourceFromBitmapDLL(f);
+                });
+
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Vm.Dispose();
+            base.OnClosing(e);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
     }
